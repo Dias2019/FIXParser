@@ -24,6 +24,32 @@ Welcome to the **FIXParser** project! This repository contains a Java applicatio
    java -cp src/main/java org.parser.Main
    ```
 
+## Benchmark Testing 🚀
+
+The project includes benchmark tests to measure the performance of the FIX parsing functionality:
+
+- **Benchmark Test Class**: `FIXParserServiceBenchmarkTest.java`
+- **Test Data**: 100 copies of the same FIX message
+
+### What's Being Measured
+
+The benchmark tests measure:
+
+- Throughput (messages processed per second)
+- Average processing time per message
+- Memory usage during parsing operations
+- Performance under different load conditions
+
+Results from these tests help optimize the parser for production environments and provide insights into how the parser performs with various message types and volumes.
+
+### Benchmark Results
+
+Below is a visualization of how the parser performance scales with the number of threads:
+
+![Thread Performance Comparison](img/numOfThreads.jpg)
+
+The graph shows the relationship between the number of processing threads and overall throughput. This data helps determine the optimal thread configuration for different environments and message volumes.
+
 ## Future Plans 🚀
 
 - Implement FIX message parsing.
