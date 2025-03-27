@@ -35,22 +35,4 @@ public class FIXParserService implements Closeable {
             }
         }
     }
-
-    public static void main(String[] args) {
-        FIXParserService service = null;
-        try {
-            service = FIXParserServiceFactory.create();
-
-            // Your application logic here
-            // ...
-
-        } catch (final Exception e) {
-            e.printStackTrace();
-        } finally {
-            // Close all parser threads
-            if (service != null) {
-                service.close();
-            }
-        }
-    }
 }
