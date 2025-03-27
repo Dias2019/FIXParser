@@ -1,6 +1,5 @@
 package org.parser.service;
 
-import org.parser.service.factory.FIXParserServiceFactory;
 import org.parser.service.parser.worker.IFIXParserThread;
 import java.io.Closeable;
 import java.io.IOException;
@@ -16,11 +15,15 @@ public class FIXParserService implements Closeable {
 
     public boolean handleFixMessage(final byte[] message) {
         messageCount++;
-        return parsers[messageCount % parsers.length].handleMessage(message);
+        return parsers[messageCount % parsers.length].handleMessage(message);       //round-robin
     }
 
     public IFIXParserThread[] getParsers() {
         return parsers;
+    }
+
+    public int getMessageCount() {
+        return messageCount;
     }
 
     @Override
