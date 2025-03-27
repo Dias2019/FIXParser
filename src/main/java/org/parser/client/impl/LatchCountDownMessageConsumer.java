@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Test FIX Message Consumer: notifies when all incoming messages have been parsed.
+ */
 public class LatchCountDownMessageConsumer implements IMessageConsumer {
 
     private final List<FIXMessage> messages;

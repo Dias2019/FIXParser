@@ -6,6 +6,9 @@ import org.parser.service.parser.message.FIXMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Simple FIX Message Consumer: stores all received messages.
+ */
 public class StorageMessageConsumer implements IMessageConsumer {
 
     private final List<FIXMessage> messages;
