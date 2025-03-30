@@ -17,6 +17,8 @@ import java.util.OptionalDouble;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FIXParserServiceBenchmarkTest {
 
     private List<byte[]> messages;
@@ -112,9 +114,11 @@ public class FIXParserServiceBenchmarkTest {
 
     public void benchmarkRun(FIXParserService service, int worker, List<Long> latency) throws Exception {
 
+        boolean allMsgParsedSuccessfully = true;
         long start = System.nanoTime();
         for (byte[] message : messages) {
-            service.handleFixMessage(message);
+            boolean result = service.handleFixMessage(message);
+            allMsgParsedSuccessfully &= result;
         }
         // Wait for all messages to be processed (with timeout for safety)
         boolean allProcessed = completionLatch.await(30, TimeUnit.SECONDS);
@@ -123,6 +127,8 @@ public class FIXParserServiceBenchmarkTest {
         if (!allProcessed) {
             System.out.println("WARNING: Timed out waiting for message processing!");
         }
+
+        assertTrue(allMsgParsedSuccessfully);
 
         long duration = end - start;
         latency.add(duration);

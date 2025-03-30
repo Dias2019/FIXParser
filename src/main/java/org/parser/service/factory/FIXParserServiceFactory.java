@@ -15,11 +15,13 @@ public class FIXParserServiceFactory {
     private static final String WORKER_COUNT_PROP = "fix.workerCount";
     private static final int DEFAULT_WORKER_COUNT = 4;
 
+
     public static FIXParserService create() throws Exception {
         Properties properties = PropertiesFactory.create();
         int workerCount = getWorkerCountFromProperties(properties);
         return createWithCustomConsumerAndWorkerCount(workerCount, new StorageMessageConsumer());
     }
+
 
     public static FIXParserService createWithCustomConsumerAndWorkerCount(int workers, IMessageConsumer consumer) throws Exception {
 
@@ -28,9 +30,9 @@ public class FIXParserServiceFactory {
         for (int i = 0; i < workers; i++) {
             parsers[i] = new FIXParserThread("FIXParserThread-" + i, consumer, tagTransformer);
         }
-
         return new FIXParserService(parsers);
     }
+
 
     private static int getWorkerCountFromProperties(Properties properties) {
 
@@ -42,8 +44,10 @@ public class FIXParserServiceFactory {
             }
         } catch (NumberFormatException e) {
             // Use default value if parsing fails
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
         return workerCount;
     }
 }

@@ -25,14 +25,14 @@ public class FIXParserThread implements IFIXParserThread, Closeable {
     private final FIXParser parser;
     private final IMessageConsumer consumer;
     private volatile boolean stop = false;
+    private final Thread thread;
 
     public FIXParserThread(final String name, final IMessageConsumer consumer, final IFIXTagTransformer tagMapper) {
         queue = new LinkedBlockingDeque<>(150);
         parser = new FIXParser(tagMapper);
         this.consumer = consumer;
 
-        // Create and start a worker thread
-        final Thread thread = new Thread(this::serviceQueueWrapper);
+        thread = new Thread(this::serviceQueueWrapper);
         thread.setName(name);
         thread.start();
     }
@@ -69,8 +69,9 @@ public class FIXParserThread implements IFIXParserThread, Closeable {
     private void serviceQueue() throws InterruptedException {
         while (!stop) {
             byte[] msg = queue.take();
-            // Skip empty messages (poison pills)
+
             if (msg.length == 0) {
+                // Skip empty messages (poison pills)
                 continue;
             }
             boolean success = parser.parse(msg, consumer);
@@ -81,11 +82,14 @@ public class FIXParserThread implements IFIXParserThread, Closeable {
 
     @Override
     public void close() throws IOException {
+        LOGGER.info("closing FIXParserThread: {}", thread.getName());
         stop = true;
         try {
+            // sending poison pill to trigger stop flag check
             queue.offer(new byte[0], 100, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        LOGGER.info("closed FIXParserThread: {}", thread.getName());
     }
 }
